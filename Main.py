@@ -96,6 +96,3 @@ test_images_array = numpy.array(prediction_images)
 probability_model = keras.Sequential([model, keras.layers.Softmax()])
 predictions = probability_model.predict(test_images_array)
 print(names[numpy.argmax(predictions)])
-
-
-
