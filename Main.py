@@ -59,7 +59,6 @@ model = keras.Sequential([
     keras.layers.Dense(len(names))
 ])
 
-
 for i in range(0,len(labels)):
     labels[i] = float(labels[i])
 
@@ -76,23 +75,32 @@ cp_callback = keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                  save_weights_only=True,
                                                  verbose=1)
 
-model.fit(training_set, labels, epochs=10,callbacks=cp_callback)
+#model.fit(training_set, labels, epochs=100,callbacks=cp_callback)
 
-predictions_directory = main_path + "\\" + "predictions"
-resized_predictions_directory = main_path + "\\" + "predictions_resized"
-for i in os.listdir(predictions_directory):
-    ig = Image.open(predictions_directory + "\\" + i)
-    ig = ig.resize((100,100))
-    ig.save(resized_predictions_directory + "\\" + f"resized_{i}")
+def Recognise(main_path : str):
+    predictions_directory = main_path + "\\" + "predictions"
+    resized_predictions_directory = main_path + "\\" + "predictions_resized"
+    for i in os.listdir(predictions_directory):
+        ig = Image.open(predictions_directory + "\\" + i)
+        ig = ig.resize((100,100))
+        ig.save(resized_predictions_directory + "\\" + f"resized_{i}")
 
-prediction_images = []
-for i in os.listdir(resized_predictions_directory):
-    n = img.imread(resized_predictions_directory + "\\" + i)
-    prediction_images.append(n)
+    prediction_images = []
+    for i in os.listdir(resized_predictions_directory):
+        n = img.imread(resized_predictions_directory + "\\" + i)
+        prediction_images.append(n)
 
-prediction_images = numpy.array(prediction_images)
+    prediction_images = numpy.array(prediction_images)
 
-test_images_array = numpy.array(prediction_images)
-probability_model = keras.Sequential([model, keras.layers.Softmax()])
-predictions = probability_model.predict(test_images_array)
-print(names[numpy.argmax(predictions)])
+    test_images_array = numpy.array(prediction_images)
+    probability_model = keras.Sequential([model, keras.layers.Softmax()])
+    predictions = probability_model.predict(test_images_array)
+
+    return names[numpy.argmax(predictions)]
+
+    for i in os.listdir(predictions_directory):
+        os.remove(predictions_directory + "//" + i)
+    for i in os.listdir(resized_predictions_directory):
+        os.remove(resized_predictions_directory + "//" + i)
+    
+print(Recognise(main_path))
