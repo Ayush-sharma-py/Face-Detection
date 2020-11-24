@@ -75,7 +75,7 @@ cp_callback = keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                  save_weights_only=True,
                                                  verbose=1)
 
-#model.fit(training_set, labels, epochs=100,callbacks=cp_callback)
+#model.fit(training_set, labels, epochs=512,callbacks=cp_callback)
 
 def Recognise(main_path : str):
     predictions_directory = main_path + "\\" + "predictions"
@@ -96,11 +96,9 @@ def Recognise(main_path : str):
     probability_model = keras.Sequential([model, keras.layers.Softmax()])
     predictions = probability_model.predict(test_images_array)
 
-    return names[numpy.argmax(predictions)]
-
     for i in os.listdir(predictions_directory):
         os.remove(predictions_directory + "//" + i)
     for i in os.listdir(resized_predictions_directory):
         os.remove(resized_predictions_directory + "//" + i)
     
-print(Recognise(main_path))
+    return names[numpy.argmax(predictions)]
